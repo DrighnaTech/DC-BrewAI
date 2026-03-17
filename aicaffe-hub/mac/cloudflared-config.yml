@@ -1,0 +1,17 @@
+# ~/.cloudflared/config.yml
+# Replace TUNNEL_ID with the ID from: cloudflared tunnel list
+
+tunnel: TUNNEL_ID
+credentials-file: /Users/YOUR_USERNAME/.cloudflared/TUNNEL_ID.json
+
+ingress:
+  # AICaffe Hub (Open WebUI)
+  - hostname: hub.yourdomain.com
+    service: http://localhost:8080
+
+  # LLM API gateway (if running on Mac mini too)
+  - hostname: llm.yourdomain.com
+    service: http://localhost:8001
+
+  # Catch-all required by cloudflared
+  - service: http_status:404

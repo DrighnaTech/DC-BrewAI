@@ -1,0 +1,27 @@
+[Unit]
+Description=BrewAI Frontend (Next.js)
+After=network.target brewai-backend.service
+
+[Service]
+Type=exec
+User=brewai
+Group=brewai
+WorkingDirectory=/opt/brewai/frontend
+
+Environment=NODE_ENV=production
+Environment=PORT=3000
+# Tell Next.js to proxy /api calls to the backend
+Environment=BACKEND_URL=http://127.0.0.1:8000
+
+ExecStart=/usr/bin/node server.js
+
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=brewai-frontend
+
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,36 @@
+[Unit]
+Description=BrewAI Backend (FastAPI + Uvicorn)
+After=network.target postgresql.service
+
+[Service]
+Type=exec
+User=brewai
+Group=brewai
+WorkingDirectory=/opt/brewai/backend
+
+# Load environment from project .env
+EnvironmentFile=/opt/brewai/.env
+
+# Run migrations then start uvicorn (production — no --reload)
+ExecStartPre=/opt/brewai/backend/venv/bin/alembic upgrade head
+ExecStart=/opt/brewai/backend/venv/bin/uvicorn app.main:app \
+    --host 127.0.0.1 \
+    --port 8000 \
+    --workers 2 \
+    --log-level info \
+    --access-log
+
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=brewai-backend
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/brewai
+
+[Install]
+WantedBy=multi-user.target

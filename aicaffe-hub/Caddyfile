@@ -1,0 +1,15 @@
+# AICaffe Hub — public HTTPS endpoint
+# Replace with your actual domain
+
+hub.yourdomain.com {
+    reverse_proxy 127.0.0.1:8080 {
+        flush_interval -1   # needed for streaming
+    }
+}
+
+# Your existing LLM API gateway (from gateway/setup)
+llm.yourdomain.com {
+    reverse_proxy 127.0.0.1:8001 {
+        flush_interval -1
+    }
+}

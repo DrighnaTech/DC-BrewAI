@@ -1,0 +1,18 @@
+# DataCaffe LLM Gateway — Caddyfile
+# Replace llm.yourdomain.com with your actual domain
+# Caddy auto-provisions HTTPS certificates — no certbot needed
+
+llm.yourdomain.com {
+    # LLM Gateway (FastAPI on port 8001)
+    reverse_proxy 127.0.0.1:8001 {
+        # Critical for streaming responses
+        flush_interval -1
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Real-IP {remote_host}
+    }
+}
+
+# Optional: BrewAI app on a subdomain
+# app.yourdomain.com {
+#     reverse_proxy 127.0.0.1:3000
+# }

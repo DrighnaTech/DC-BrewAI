@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.aicaffe.webui</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/YOUR_USERNAME/aicaffe-hub/venv/bin/open-webui</string>
+        <string>serve</string>
+        <string>--port</string>
+        <string>8080</string>
+    </array>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>WEBUI_NAME</key>
+        <string>AICaffe Hub</string>
+        <key>WEBUI_SECRET_KEY</key>
+        <string>CHANGE_THIS_TO_RANDOM_STRING</string>
+        <!-- Points to local Ollama -->
+        <key>OLLAMA_BASE_URL</key>
+        <string>http://127.0.0.1:11434</string>
+        <!-- Enable RAG with local embeddings -->
+        <key>RAG_EMBEDDING_ENGINE</key>
+        <string>ollama</string>
+        <key>RAG_OLLAMA_BASE_URL</key>
+        <string>http://127.0.0.1:11434</string>
+        <key>RAG_EMBEDDING_MODEL</key>
+        <string>nomic-embed-text</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/tmp/aicaffe-webui.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/aicaffe-webui.err</string>
+</dict>
+</plist>

@@ -1,0 +1,48 @@
+version: "3.9"
+
+services:
+  # ── LiteLLM — unified gateway with routing, keys, rate limits ─────────────
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:4000:4000"
+    volumes:
+      - ./litellm_config.yaml:/app/config.yaml:ro
+    command: ["--config", "/app/config.yaml", "--port", "4000", "--detailed_debug"]
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}   # your admin key
+      DATABASE_URL: ${DATABASE_URL:-}              # optional postgres for spend tracking
+    networks:
+      - aicaffe
+
+  # ── Open WebUI — the hub frontend ─────────────────────────────────────────
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - open-webui-data:/app/backend/data
+    environment:
+      # Point to LiteLLM (not directly to Ollama)
+      OPENAI_API_BASE_URL: http://litellm:4000/v1
+      OPENAI_API_KEY: ${LITELLM_MASTER_KEY}
+      # Disable Ollama direct — all goes through LiteLLM
+      ENABLE_OLLAMA_API: "false"
+      # Auth
+      WEBUI_SECRET_KEY: ${WEBUI_SECRET_KEY}
+      WEBUI_NAME: "AICaffe Hub"
+      # Enable image uploads for vision
+      ENABLE_IMAGE_GENERATION: "false"  # set true if you add image gen later
+    depends_on:
+      - litellm
+    networks:
+      - aicaffe
+
+volumes:
+  open-webui-data:
+
+networks:
+  aicaffe:
+    driver: bridge
